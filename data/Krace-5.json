@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Krace",
+  "risk": "3",
+  "title": "No slippage protect in the function `OUSGInstantManager.mint`",
+  "issueId": 5,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/5"
+}
