@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "nikhil840096",
+  "risk": "3",
+  "title": "The vulnerability resides in the `ousgInstantManager.sol` contract where the `mintFee` variable is initially set to 0, and there exists a function named `setMintFee` to adjust this fee. However, due to the absence of proper initialization or protection mechanisms, an attacker can exploit the delay between the owner's execution of the 'setMintFee' function and its confirmation on the blockchain. During this window, the attacker can front-run the transaction, manipulating the minting process to avoid paying the required fee.",
+  "issueId": 13,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/13"
+}
