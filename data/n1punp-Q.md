@@ -15,7 +15,8 @@ function initialize(
   }
 ```
 
-This function is never called internally, so it is recommended to limit this to *external* visibility. 
+
+The [initialize](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L108) function is never called internally, so it is recommended to limit this to *external* visibility. 
 
 ## 2. Use SafeERC20's `safeTransfer` for `retrieveTokens` in `ousgInstantManager.sol` to handle USDT token rescue.
 
