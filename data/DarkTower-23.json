@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "DarkTower",
+  "risk": "2",
+  "title": "`rOUSG::_getKYCStatus` can be subverted by any user due to be delisted",
+  "issueId": 23,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/23"
+}
