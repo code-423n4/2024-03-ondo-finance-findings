@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Sabit",
+  "risk": "2",
+  "title": "Excessive usdc allowance can lead to loss of funds",
+  "issueId": 31,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/31"
+}
