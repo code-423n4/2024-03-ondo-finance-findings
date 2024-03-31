@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Tigerfrake",
+  "risk": "3",
+  "title": "User tokens are sent to the admin instead of being returned to the source _account  after burning shares.",
+  "issueId": 24,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/24"
+}
