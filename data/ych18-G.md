@@ -1,0 +1,4 @@
+- Checking for USDC.decimals() and BUIDL.deciamls() in `OUSGInstantManager._redeem()` and `OUSGInstantManager._mint()` is not necessary, this check can be done once in the constrcutor.
+- Checking for the allowance in most of `OUSGInstantManager` functions is not necessary and can be removed, the `transferFrom` function already check for that.
+- In `rOUSG.wrap()`, the `whenNotPaused` is checked twice, in the function `wrap()` and in the function `_mintShares()`
+- In `rOUSG.unwrap()`, the `whenNotPaused` is checked twice, in the function `unwrap()` and in the function `_burnShares()`
