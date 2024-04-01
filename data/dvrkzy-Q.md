@@ -80,3 +80,15 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
 
 ## Recommendations
 Change the require statement to check for a 6 decimal value instead of 10_000
+
+# [L-06] Wrong check in `unwrap()`
+
+The unwrap function has the following check:
+```
+if (ousgSharesAmount < OUSG_TO_ROUSG_SHARES_MULTIPLIER)
+      revert UnwrapTooSmall();
+```
+The problem with this check is that `ousgSharesAmount` is 18 decimal but `OUSG_TO_ROUSG_SHARES_MULTIPLIER= 10_000` thus the revert will never happen.
+
+## Recommendations
+Change the if statement to check for an 18 decimal value
