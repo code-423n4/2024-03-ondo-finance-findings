@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Tigerfrake",
+  "risk": "2",
+  "title": "ROUSG::transfer() does not check the success of the operation before returning `true`",
+  "issueId": 49,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/49"
+}
