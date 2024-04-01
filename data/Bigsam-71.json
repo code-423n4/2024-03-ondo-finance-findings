@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Bigsam",
+  "risk": "2",
+  "title": "Address Zero Check Missing in Admin Functions for Crucial Contract Inputs",
+  "issueId": 71,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/71"
+}
