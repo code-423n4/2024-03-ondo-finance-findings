@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xDemon",
+  "risk": "2",
+  "title": "User may get less amount when call `OUSGInstantManager::mintRebasingOUSG()`, if `getOUSGPrice` return wrong value ",
+  "issueId": 55,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/55"
+}
