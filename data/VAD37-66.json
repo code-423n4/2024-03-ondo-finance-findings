@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "VAD37",
+  "risk": "2",
+  "title": "For institution user using GnosisSafe, it is very likely for them to have revert transaction when withdrawing 100% funds. Due to `rOUSG.sol` token transfer might revert if oracle price move while transaction is signing/pending",
+  "issueId": 66,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/66"
+}
