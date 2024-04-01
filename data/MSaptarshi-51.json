@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "MSaptarshi",
+  "risk": "3",
+  "title": "Initialization functions can be front-run",
+  "issueId": 51,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/51"
+}
