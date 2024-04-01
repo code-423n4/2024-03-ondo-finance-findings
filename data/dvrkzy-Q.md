@@ -61,3 +61,22 @@ Change the check from above to this:
       "OUSGInstantManager::_redeemBUIDL: Insufficient BUIDL balance"
     );
 ```
+
+# [L-05] Wrong checks in minimum deposit/redeem setters
+
+The function `setMinimumDepositAmount()` has the following check:
+```
+require(
+      _minimumDepositAmount >= FEE_GRANULARITY,
+      "setMinimumDepositAmount: Amount too small"
+    );
+```
+However this check is not correct because `_minimumDepositAmount` and `FEE_GRANULARITY` are not the same decimals (`_minimumDepositAmount` is 6  decimal and `FEE_GRANULARITY = 10_000`). This means that it allows the admin to set a value for `_minimumDepositAmount` to for example 50_000 which isn't an appropriate value.
+
+The same error is made in the `setMinimumRedemptionAmount()` function.
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L602-L605
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L584-L587
+
+## Recommendations
+Change the require statement to check for a 6 decimal value instead of 10_000
