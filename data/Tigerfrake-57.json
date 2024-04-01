@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Tigerfrake",
+  "risk": "3",
+  "title": "The return value  of the getPriceData() of the IRWAOracle interface is not checked",
+  "issueId": 57,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/57"
+}
