@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "poslednaya",
+  "risk": "2",
+  "title": "Overfolow in `increaseAllowance()` can lead to DoS or others attack vectors",
+  "issueId": 65,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/65"
+}
