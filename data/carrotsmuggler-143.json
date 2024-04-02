@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "carrotsmuggler",
+  "risk": "2",
+  "title": "Close hardcoded `MINIMUM_OUSG_PRICE` in `ousgInstantManager` contract can lead to DOS",
+  "issueId": 143,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/143"
+}
