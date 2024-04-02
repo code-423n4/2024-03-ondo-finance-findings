@@ -116,6 +116,9 @@ require(
 ## [L-03]  Possible limitations with Fee Setting Functions With a Maximum Cap of 200 
 
 ---
+**Github code**
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L548-L573
+
 
 ## Impact
 The setMintFee and setRedeemFee functions are used to set the mint and redeem fees, respectively, specified in basis points. Currently, the functions contain a requirement that the fee must be less than 200 basis points. Lowering the fee below this threshold may introduce several vulnerabilities and risks to the system, especially when other requirements like minimum deposits do not have a maximum cap limit thus when we reach a point based in the market cycle (bull and bear market scenario) that the fees collected will no longer be sufficiently equivalent to the corresponding market situation we are left with no option to update the fee. BNB,Eth and other token experiences gas fee increase for transactions when
