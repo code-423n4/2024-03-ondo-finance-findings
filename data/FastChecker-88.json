@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "FastChecker",
+  "risk": "2",
+  "title": "No slippage control in the `mint()` and `redeem()` functions in `ousgInstantManager.sol`.",
+  "issueId": 88,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/88"
+}
