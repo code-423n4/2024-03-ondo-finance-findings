@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Abdessamed",
+  "risk": "2",
+  "title": "`OUSGInstantManager::redeem` does not protect investors from withdrawing too little USDC compared to the amount they had deposited",
+  "issueId": 124,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/124"
+}
