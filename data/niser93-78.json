@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "niser93",
+  "risk": "2",
+  "title": "MINIMUM_OUSG_PRICE constant used as safety circuit breaker could lead to unwanted DoS of OUSGInstantManager",
+  "issueId": 78,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/78"
+}
