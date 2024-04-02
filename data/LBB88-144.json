@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "LBB88",
+  "risk": "3",
+  "title": "Insufficient safeguards for handling price data in `ROUSG::getOUSGPrice` leading to arithmetic underflow or overflow error.",
+  "issueId": 144,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/144"
+}
