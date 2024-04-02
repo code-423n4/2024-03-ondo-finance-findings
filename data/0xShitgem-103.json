@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xShitgem",
+  "risk": "2",
+  "title": "Blacklisted `feeReceiver` will cause revert on every `mint`, `mintRebasingOUSG`, `redeem` and `redeemRebasingOUSG` executed by user",
+  "issueId": 103,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/103"
+}
