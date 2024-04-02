@@ -175,5 +175,128 @@ To address the identified issues in the `setMintFee` and `setRedeemFee` function
 since other state variables as a function that regulates their total limit, Consider using a new variable (MAXFEE) that can be set like our limits.
  
 
+---
+
+## [L-04]  Insufficient comment in rOUSG Contract
+
+---
 
 
+**Github code** 
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L618-L640
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L544-L570
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L408-L443
+
+
+The rOUSG contract is designed to manage the wrapping and unwrapping of OUSG tokens. The contract includes functionalities like wrapping OUSG tokens to mint rOUSG tokens, unwrapping rOUSG tokens to redeem OUSG tokens, and burning rOUSG tokens. This report aims to highlight and address the insufficiency of comments in the code and potential issues related to the contract's functionality.
+
+
+ 1. Insufficient Comments in `burn` Function
+
+The `burn` function in the rOUSG contract has insufficient comments, which could lead to misunderstanding or misuse of the function. 
+
+```solidity
+/**
+ * @notice Admin burn function to burn rOUSG tokens from any account
+ * @param _account The account to burn tokens from
+ * @param _amount  The amount of rOUSG tokens to burn
+ * @dev Transfers burned shares (OUSG) to `msg.sender`
+ */
+function burn(
+  address _account,
+  uint256 _amount
+) external onlyRole(BURNER_ROLE) {
+  uint256 ousgSharesAmount = getSharesByROUSG(_amount);
+  if (ousgSharesAmount < OUSG_TO_ROUSG_SHARES_MULTIPLIER)
+    revert UnwrapTooSmall();
+
+  _burnShares(_account, ousgSharesAmount);
+
+  ousg.transfer(
+    msg.sender,
+    ousgSharesAmount / OUSG_TO_ROUSG_SHARES_MULTIPLIER
+  );
+  emit Transfer(address(0), msg.sender, getROUSGByShares(ousgSharesAmount));
+  emit TransferShares(_account, address(0), ousgSharesAmount);
+}
+```
+
+ Pause Mechanism Issue in `burn` and `_burnShares` Functions
+
+The `burn` function calls the `_burnShares` function, which has a `whenNotPaused` modifier. This means that if the contract is paused, the `burn` function will revert.
+
+```solidity
+/**
+ * @notice Destroys `_sharesAmount` shares from `_account`'s holdings, decreasing the total amount of shares.
+ * @dev This doesn't decrease the token total supply.
+ *
+ * Requirements:
+ *
+ * - `_account` cannot be the zero address.
+ * - `_account` must hold at least `_sharesAmount` shares.
+ * - the contract must not be paused.
+ */
+function _burnShares(
+  address _account,
+  uint256 _sharesAmount
+) internal whenNotPaused returns (uint256) {
+  ......  
+}
+```
+
+ 2. Insufficient Comments in `wrap` and `unwrap` Functions
+
+The `wrap` and `unwrap` functions also have insufficient comments, which can lead to misunderstandings or misuse.
+
+```solidity
+/**
+ * @notice Function called by users to wrap their OUSG tokens
+ *
+ * @param _OUSGAmount The amount of OUSG Tokens to wrap
+ *
+ * @dev KYC checks implicit in OUSG Transfer
+ */
+function wrap(uint256 _OUSGAmount) external whenNotPaused {
+  require(_OUSGAmount > 0, "rOUSG: can't wrap zero OUSG tokens");
+  uint256 ousgSharesAmount = _OUSGAmount * OUSG_TO_ROUSG_SHARES_MULTIPLIER;
+  _mintShares(msg.sender, ousgSharesAmount);
+  ousg.transferFrom(msg.sender, address(this), _OUSGAmount);
+  emit Transfer(address(0), msg.sender, getROUSGByShares(ousgSharesAmount));
+  emit TransferShares(address(0), msg.sender, ousgSharesAmount);
+}   
+
+/**
+ * @notice Function called by users to unwrap their rOUSG tokens
+ *
+ * @param _rOUSGAmount The amount of rOUSG to unwrap
+ *
+ * @dev KYC checks implicit in OUSG Transfer
+ */
+function unwrap(uint256 _rOUSGAmount) external whenNotPaused {
+  require(_rOUSGAmount > 0, "rOUSG: can't unwrap zero rOUSG tokens");
+  uint256 ousgSharesAmount = getSharesByROUSG(_rOUSGAmount);
+  if (ousgSharesAmount < OUSG_TO_ROUSG_SHARES_MULTIPLIER)
+    revert UnwrapTooSmall();
+  _burnShares(msg.sender, ousgSharesAmount);
+  ousg.transfer(
+    msg.sender,
+    ousgSharesAmount / OUSG_TO_ROUSG_SHARES_MULTIPLIER
+  );
+  emit Transfer(msg.sender, address(0), _rOUSGAmount);
+  emit TransferShares(msg.sender, address(0), ousgSharesAmount);
+}
+```
+The functions has a `whenNotPaused` modifier. This means that if the contract is paused, they will revert.
+
+
+## Recommendations
+
+ Update Comments in `burn`, `wrap`, and `unwrap` Functions
+
+Update the comments in the `burn`, `wrap`, and `unwrap` functions to provide clear and comprehensive explanations of the functions' functionalities and requirements.
+
+```solidity
+   * - the contract must not be paused.
+```
