@@ -1,0 +1,2 @@
+[L-01] Missing checks for address(0x0) when updating address state variables
+State variables that are of type address should always be checked to ensure that they are not being assigned the null address (address(0x0)). A null address often implies an error or omission in the code. Without proper checks, such a scenario can lead to unexpected behavior and potential vulnerabilities in the smart contract. Therefore, it is considered good practice to implement checks for address(0x0) prior to assigning new values to address state variables.
