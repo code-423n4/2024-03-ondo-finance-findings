@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Arz",
+  "risk": "2",
+  "title": "The admin wont be able to burn rOUSG from sanctioned addresses because of a check in _beforeTokenTransfer",
+  "issueId": 147,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/147"
+}
