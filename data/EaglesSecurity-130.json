@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "EaglesSecurity",
+  "risk": "3",
+  "title": "Missing require in setOracle() can lead to DoS",
+  "issueId": 130,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/130"
+}
