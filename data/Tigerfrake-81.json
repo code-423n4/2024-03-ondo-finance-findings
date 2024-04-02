@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Tigerfrake",
+  "risk": "2",
+  "title": "Incorrect Event emission in ROUSG::unwrap()",
+  "issueId": 81,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/81"
+}
