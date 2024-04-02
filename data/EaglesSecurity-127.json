@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "EaglesSecurity",
+  "risk": "3",
+  "title": "Missing BUIDL minimum check in ousgInstantManager.sol::setMinimumBUIDLRedemptionAmount can lead to wrong protocol calculations and behavior",
+  "issueId": 127,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/127"
+}
