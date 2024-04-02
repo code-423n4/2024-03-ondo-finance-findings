@@ -77,6 +77,11 @@ To address the identified issues in the `setInvestorBasedRateLimiter` and `setOr
 
 ---
 
+**Github code**
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L186-L189
+
+
+
 ### Impact
 The current implementation of the require statement for decimal comparison in the `OUSGInstantManager` contract produces an inaccurate error message. The error message incorrectly states that "OUSG decimals must be equal to USDC decimals," while the actual comparison is between `OUSG` and `ROUSG` decimals. This misleading error message can cause confusion during debugging and auditing processes.
 
