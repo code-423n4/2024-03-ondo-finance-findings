@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "EaglesSecurity",
+  "risk": "3",
+  "title": "In ousgInstantManager.sol during creation, in the constructor USDC and BUIDL potentially can be initialized with more than 6 decimals that can lead to DoS",
+  "issueId": 114,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/114"
+}
