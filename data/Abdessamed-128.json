@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Abdessamed",
+  "risk": "3",
+  "title": "`ousgInstantManager` could work with outdated OUSG price because `getOUSGPrice` does not check the `priceTimestamp` returned by the oracle",
+  "issueId": 128,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/128"
+}
