@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Tychai0s",
+  "risk": "2",
+  "title": "Stale Oracle Price Data in `getOUSGPrice` Function of rOUSG Contract",
+  "issueId": 123,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/123"
+}
