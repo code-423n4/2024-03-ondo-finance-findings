@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "carrotsmuggler",
+  "risk": "3",
+  "title": "BUIDL tokens in the manager contract can be force converted into USDC DOSing operations at a small fee",
+  "issueId": 141,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/141"
+}
