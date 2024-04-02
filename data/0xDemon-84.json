@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xDemon",
+  "risk": "2",
+  "title": "`setMinimumDepositAmount`, `setMinimumRedemptionAmount`, and `setMinimumBUIDLRedemptionAmount` functions will not work because the values of these 3 storage variables are hardcoded",
+  "issueId": 84,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/84"
+}
