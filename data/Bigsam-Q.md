@@ -169,8 +169,7 @@ The presence of a maximum fee basic in these function and an absence of a maximu
 
 ## Recommended Mitigation Steps
 To address the identified issues in the `setMintFee` and `setRedeemFee` functions, consider the following steps:
-1. Setting a maximum value for others inputs
-2. **Track Minimum Deposit Value:** Track the minimum deposit value by a certain percentage or fraction to ensure that any increase in the minimum deposit will either raise or decrease the maxfee proportionally.
+since other state variables as a function that regulates their total limit, Consider using a new variable (MAXFEE) that can be set like our limits.
  
 
 
