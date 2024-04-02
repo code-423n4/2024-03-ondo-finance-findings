@@ -1,7 +1,14 @@
 ---
-[L-01]
+## [L-01] Address Zero Check Missing in State variable updates
 
 ---
+
+**Github code**
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L663-L673
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L638-L643
+
+
  Missing checks for address(0x0) when updating address state variables
 State variables that are of type address should always be checked to ensure that they are not being assigned the null address (address(0x0)). A null address often implies an error or omission in the code. Without proper checks, such a scenario can lead to unexpected behavior and potential vulnerabilities in the smart contract. Therefore, it is considered good practice to implement checks for address(0x0) prior to assigning new values to address state variables.
 The `setInvestorBasedRateLimiter` and `setOracle` functions allow the modification of the investor-based rate limiter and the oracle address, respectively. The impact of the finding is that there is no check to ensure that the newly passed addresses are not address zero (`0x0000000000000000000000000000000000000000`). These functions are crucial to the contract as the contract relies on them for input for sensitive data compilation. Although these functions are only called by the admin, efforts should be made to ensure that only valid addresses are passed.
@@ -64,8 +71,10 @@ To address the identified issues in the `setInvestorBasedRateLimiter` and `setOr
 
 
 
+
 ---
-[L-02]  Incorrect Error Message in Decimal Comparison
+
+## [L-02]  Incorrect Error Message in Decimal Comparison
 
 ---
 
