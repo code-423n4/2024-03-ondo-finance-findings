@@ -389,3 +389,149 @@ Path: ./contracts/ousg/ousgInstantManager.sol
 #### Recommendation
 
 To promote inclusive language and avoid insensitive terminology, consider using alternative terms such as 'allowlist' instead of 'whitelist' and 'denylist' instead of 'blacklist.' These alternatives help create a more welcoming and inclusive environment in code and documentation.
+
+### Consider implementing two-step procedure for updating protocol addresses
+Implementing a two-step procedure for updating protocol addresses adds an extra layer of security. In such a system, the first step initiates the change, and the second step, after a predefined delay, confirms and finalizes it. This delay allows stakeholders or monitoring tools to observe and react to unintended or malicious changes. If an unauthorized change is detected, corrective actions can be taken before the change is finalized. To achieve this, introduce a "proposed address" state variable and a "delay period". Upon an update request, set the "proposed address". After the delay, if not contested, the main protocol address can be updated.
+
+```solidity
+Path: ./contracts/ousg/rOUSG.sol
+
+136:    ousg = IERC20(_ousg);	// @audit-issue
+
+137:    oracle = IRWAOracle(_oracle);	// @audit-issue
+
+615:    oracle = IRWAOracle(_oracle);	// @audit-issue
+```
+[136](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L136-L136), [137](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L137-L137), [615](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L615-L615), 
+
+
+```solidity
+Path: ./contracts/ousg/ousgInstantManager.sol
+
+642:    oracle = IRWAOracle(_oracle);	// @audit-issue
+
+655:    feeReceiver = _feeReceiver;	// @audit-issue
+
+670:    investorBasedRateLimiter = IInvestorBasedRateLimiter(	// @audit-issue
+```
+[642](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L642-L642), [655](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L655-L655), [670](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L670-L670), 
+
+
+#### Recommendation
+
+Introduce two state variables in your contract: one to hold the proposed new address (`address public proposedAddress`) and another to timestamp the proposal (`uint public addressChangeInitiated`). Implement two functions: one to propose a new address, recording the current timestamp, and another to finalize the address change after the delay period has elapsed.
+
+
+### Revert on transfer to the zero address
+It's good practice to revert a token transfer transaction if the recipient's address is the zero address. This can prevent unintentional transfers to the zero address due to accidental operations or programming errors. Many token contracts implement such a safeguard, such as [OpenZeppelin - ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/9e3f4d60c581010c4a3979480e07cc7752f124cc/contracts/token/ERC20/ERC20.sol#L232), [OpenZeppelin - ERC721](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/9e3f4d60c581010c4a3979480e07cc7752f124cc/contracts/token/ERC721/ERC721.sol#L142).
+
+```solidity
+Path: ./contracts/ousg/ousgInstantManager.sol
+
+824:    IERC20(token).transfer(to, amount);	// @audit-issue
+```
+[824](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L824-L824), 
+
+
+#### Recommendation
+
+To enhance the security and reliability of your token contracts, it's advisable to implement a safeguard that reverts token transfer transactions if the recipient's address is the zero address. This practice helps prevent unintentional transfers to the zero address, reducing the risk of fund loss due to accidental operations or programming errors. Many token contracts, including [OpenZeppelin's ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/9e3f4d60c581010c4a3979480e07cc7752f124cc/contracts/token/ERC20/ERC20.sol#L232) and [ERC721](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/9e3f4d60c581010c4a3979480e07cc7752f124cc/contracts/token/ERC721/ERC721.sol#L142), incorporate this safeguard for added security.
+
+
+### External calls in an unbounded loop can result in a DoS
+Consider limiting the number of iterations in loops that make external calls, as just a single one of them failing will result in a revert.
+
+```solidity
+Path: ./contracts/ousg/rOUSGFactory.sol
+
+126:      (bool success, bytes memory ret) = address(exCallData[i].target).call{	// @audit-issue
+
+```
+[126](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSGFactory.sol#L126-L126)
+
+
+```solidity
+Path: ./contracts/ousg/ousgInstantManager.sol
+
+805:      (bool success, bytes memory ret) = address(exCallData[i].target).call{	// @audit-issue
+```
+[805](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L805-L805)
+
+
+#### Recommendation
+
+To mitigate the risk of Denial-of-Service (DoS) attacks in your Solidity code, it's important to limit the number of iterations in loops that involve external calls. A single failed external call in an unbounded loop can lead to a revert, causing disruptions in contract execution. Consider implementing safeguards, such as setting a maximum loop iteration count or employing strategies like batch processing, to reduce the impact of potential external call failures.
+
+
+### Consider bounding input array length
+If the number of for loop iterations is unbounded, then it may lead to the transaction to run out of gas. While the function will revert if it eventually runs out of gas, it may be a nicer user experience to require() that the length of the array is below some reasonable maximum, so that the user doesn't have to use up a full transaction's gas only to see that the transaction reverts.
+
+```solidity
+Path: ./contracts/ousg/rOUSGFactory.sol
+
+125:    for (uint256 i = 0; i < exCallData.length; ++i) {	// @audit-issue
+```
+[125](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSGFactory.sol#L125-L125), 
+
+
+```solidity
+Path: ./contracts/ousg/ousgInstantManager.sol
+
+804:    for (uint256 i = 0; i < exCallData.length; ++i) {	// @audit-issue
+```
+[804](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L804-L804), 
+
+
+#### Recommendation
+
+Implement a check at the beginning of your Solidity functions to enforce a maximum length on input arrays. Use a `require()` statement to validate that the length of any input array does not exceed a predetermined limit, which should be chosen based on the function's complexity and typical gas usage. This ensures that the function will not attempt to process more data than it can handle within reasonable gas limits, thereby preventing out-of-gas errors and improving the overall user experience. Clearly document this behavior and the rationale behind the chosen array size limit to inform users and developers interacting with your contract.
+
+
+### Possible loss of precision
+Division by large numbers may result in precision loss due to rounding down, or even the result being erroneously equal to zero. Consider adding checks on the numerator to ensure precision loss is handled appropriately.
+
+
+```solidity
+Path: ./contracts/ousg/rOUSG.sol
+
+190:      (totalShares * getOUSGPrice()) / (1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER);	// @audit-issue
+
+201:      (_sharesOf(_account) * getOUSGPrice()) /	// @audit-issue
+202:      (1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER);
+
+367:      (_rOUSGAmount * 1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER) / getOUSGPrice();	// @audit-issue
+
+375:      (_shares * getOUSGPrice()) / (1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER);	// @audit-issue
+
+439:      ousgSharesAmount / OUSG_TO_ROUSG_SHARES_MULTIPLIER	// @audit-issue
+
+636:      ousgSharesAmount / OUSG_TO_ROUSG_SHARES_MULTIPLIER	// @audit-issue
+```
+[190](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L190-L190), [201](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L201-L202), [367](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L367-L367), [375](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L375-L375), [439](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L439-L439), [636](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/rOUSG.sol#L636-L636), 
+
+
+```solidity
+Path: ./contracts/ousg/ousgInstantManager.sol
+
+377:    uint256 ousgAmountIn = rousg.getSharesByROUSG(rousgAmountIn) /	// @audit-issue
+378:      OUSG_TO_ROUSG_SHARES_MULTIPLIER;
+
+690:    ousgAmountOut = amountE36 / price;	// @audit-issue
+
+716:    return (usdcAmount * mintFee) / FEE_GRANULARITY;	// @audit-issue
+
+728:    return (usdcAmount * redeemFee) / FEE_GRANULARITY;	// @audit-issue
+
+748:    return amount / decimalsMultiplier;	// @audit-issue
+```
+[377](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L377-L378), [690](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L690-L690), [716](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L716-L716), [728](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L728-L728), [748](https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/./contracts/ousg/ousgInstantManager.sol#L748-L748), 
+
+
+#### Recommendation
+
+Incorporate strategies in your Solidity contracts to mitigate precision loss in division operations. This can include:
+1. Performing checks on the numerator and denominator to ensure they are within a reasonable range to avoid significant rounding errors.
+2. Considering the use of fixed-point arithmetic libraries or scaling factors to handle divisions with higher precision.
+3. Clearly documenting any inherent limitations of your division logic and providing guidelines for inputs to minimize unexpected behavior.
+Always thoroughly test division operations under various scenarios to ensure that the outcomes are consistent with your contract's intended logic and accuracy requirements.
+
