@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "FastChecker",
+  "risk": "2",
+  "title": "An attacker can interfere with the redeem function of an honest user.",
+  "issueId": 92,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/92"
+}
