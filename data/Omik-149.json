@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Omik",
+  "risk": "3",
+  "title": "getOUSGPrice() didn't check the staleness of the price data",
+  "issueId": 149,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/149"
+}
