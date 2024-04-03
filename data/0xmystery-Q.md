@@ -82,3 +82,58 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
 +      "OUSGInstantManager: OUSG decimals must be equal to rOUSG decimals"
     );
 ```
+## [NC-02] Private function with embedded modifier reduces contract size
+Consider having the logic of a modifier embedded through a private function to reduce contract size if need be. A `private` visibility that is more efficient on function calls than the `internal` visibility is adopted because the modifier will only be making this call inside the contract.
+
+For instance, the modifier below may be refactored as follows:
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L756-L759
+
+```diff
++    function _whenMintNotPaused() private view {
++        require(!mintPaused, "OUSGInstantManager: Mint paused");
++    }
+
+     modifier whenMintNotPaused() {
+-        require(!mintPaused, "OUSGInstantManager: Mint paused");
++        _whenMintNotPaused();
+     _;
+     }
+```
+## [NC-03] Activate the Optimizer
+Before deploying your contract, activate the optimizer when compiling using “solc --optimize --bin sourceFile.sol”. By default, the optimizer will optimize the contract assuming it is called 200 times across its lifetime. If you want the initial contract deployment to be cheaper and the later function executions to be more expensive, set it to “ --optimize-runs=1”. Conversely, if you expect many transactions and do not care for higher deployment cost and output size, set “--optimize-runs” to a high number.
+
+```
+module.exports = {
+solidity: {
+version: "0.8.16",
+settings: {
+optimizer: {
+  enabled: true,
+  runs: 1000,
+},
+},
+},
+};
+```
+Please visit the following site for further information:
+
+https://docs.soliditylang.org/en/v0.5.4/using-the-compiler.html#using-the-commandline-compiler
+
+Here's one example of instance on opcode comparison that delineates the gas saving mechanism:
+
+```
+for !=0 before optimization
+PUSH1 0x00
+DUP2
+EQ
+ISZERO
+PUSH1 [cont offset]
+JUMPI
+
+after optimization
+DUP1
+PUSH1 [revert offset]
+JUMPI
+```
+Disclaimer: There have been several bugs with security implications related to optimizations. For this reason, Solidity compiler optimizations are disabled by default, and it is unclear how many contracts in the wild actually use them. Therefore, it is unclear how well they are being tested and exercised. High-severity security issues due to optimization bugs have occurred in the past . A high-severity bug in the emscripten -generated solc-js compiler used by Truffle and Remix persisted until late 2018. The fix for this bug was not reported in the Solidity CHANGELOG. Another high-severity optimization bug resulting in incorrect bit shift results was patched in Solidity 0.5.6. Please measure the gas savings from optimizations, and carefully weigh them against the possibility of an optimization-related bug. Also, monitor the development and adoption of Solidity compiler optimizations to assess their maturity.   
