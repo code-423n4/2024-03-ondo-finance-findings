@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "radev_sw",
+  "risk": "2",
+  "title": "`rOUSG.sol` contract (token) isn't fully compilable with EIP20 standard",
+  "issueId": 225,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/225"
+}
