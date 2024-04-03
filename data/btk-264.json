@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "btk",
+  "risk": "2",
+  "title": "Early investors can frontrun the setFee function to mint without fees",
+  "issueId": 264,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/264"
+}
