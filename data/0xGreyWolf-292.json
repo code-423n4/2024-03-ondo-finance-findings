@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xGreyWolf",
+  "risk": "3",
+  "title": "The oracle price fetch in `ROUSG::getOUSGPrice()` lacks sanity / validity checks",
+  "issueId": 292,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/292"
+}
