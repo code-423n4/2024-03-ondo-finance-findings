@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Stormreckson",
+  "risk": "3",
+  "title": "users will loose their deposited USDC when redeeming due to rounding issues",
+  "issueId": 284,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/284"
+}
