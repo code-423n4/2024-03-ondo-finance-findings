@@ -10,6 +10,7 @@
 | [L-03] | No price validation check in rOUSG                               |
 | [L-04] | rOUSG is not erc20 compliant                                     |
 | [L-05] | Incorrect check in _redeemBUIDL                                  |
+| [L-06] | Minting will get DoSed if the usdcReceiver got blocklisted      |
 
 ## [L-01] Funds will become inaccessible when USDC blacklists a user
 
@@ -179,3 +180,27 @@ Consider updating the _redeemBUIDL function check as follows:
     );
   }
 ```
+
+## [L-06] Minting will get DoSed if the usdcReceiver got blocklisted
+
+## Impact
+
+OUSGInstantManager minting will get DoSed if the usdcReceiver got blocklisted by USDC.
+
+## Description
+
+Some ERC-20 tokens like for example USDC (which is used by the system) have the functionality to blacklist specific addresses, so that they are no longer able to transfer and receive tokens. Sending funds to these addresses will lead to a revert. Currently, the usdcReceiver address in the OUSGInstantManager contract is immutable and cannot be changed:
+
+```solidity
+address public immutable usdcReceiver;
+```
+
+If the usdcReceiver address is blacklisted by USDC, attempts to transfer tokens to it will always revert, potentially leading to a permanent DoS during minting:
+
+```solidity
+usdc.transferFrom(msg.sender, usdcReceiver, usdcAmountAfterFee);
+```
+
+## Recommended Mitigation Steps
+
+Consider making the usdcReceiver address mutable and implementing a function to update it in case of blacklisting by USDC.
