@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "arnie",
+  "risk": "3",
+  "title": "BUIDL is redeemed even in situations where we have enough USDC, leading to a draining of BUIDL",
+  "issueId": 157,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/157"
+}
