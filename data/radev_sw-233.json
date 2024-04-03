@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "radev_sw",
+  "risk": "2",
+  "title": "The functions for updating instant mint and redemption limit during minting and redeeming are at wrong place (before fees calculating)",
+  "issueId": 233,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/233"
+}
