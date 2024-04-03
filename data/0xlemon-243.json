@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xlemon",
+  "risk": "2",
+  "title": "Users are unable to redeem when there is USDC in the OUSGInstantManager and not enough buidl balance",
+  "issueId": 243,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/243"
+}
