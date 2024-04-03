@@ -18,6 +18,9 @@ as As in this case 'buidl.balanceOf(address(this)) >= minBUIDLRedeemAmount' so t
 and `buidl.approve(address(buidlRedeemer), buidlAmountToRedeem);` 
 will approve buidl more than the balance of contract to the buidlRedeemer which while redeeming inside buidlRedeemer will result in unexpected behaviour.
 
+Related link :
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L458-L470
+
 ### Recommendation:
 
 `require(`
