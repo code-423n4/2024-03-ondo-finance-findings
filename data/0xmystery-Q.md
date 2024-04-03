@@ -78,7 +78,9 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
 ```solidity
   uint256 public constant MINIMUM_OUSG_PRICE = 105e18;
 ```
-The sponsor probably meant 1.05e18. Otherwise, OUSD and the shares associated with rOUSG will all be diminished/shifted by two decimals.
+The [RWADynamicOracle](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/rwaOracles/RWADynamicOracle.sol) contract's price calculation, as defined by its `derivePrice` function, uses a compound interest formula that factors in the elapsed time since a range's start, the daily interest rate, and the previous range's closing price. The function employs fixed-point arithmetic for operations, crucial due to Solidity's lack of native floating-point support. The final price is thus influenced by the set daily interest rate, the duration of the elapsed time, and the starting price point for each range. Given these dynamics, it's possible for the contract to output prices exceeding `1.05e18`, especially with higher interest rates or over longer periods. However, reaching or surpassing `105e18` would likely indicate unusually high rates or extended compounding periods, possibly pointing to misconfiguration or an aggressive financial model. The actual price outcomes will ultimately hinge on the specific interest rates and range durations set within the contract, emphasizing the need for careful review and alignment with the intended economic behaviors and use cases.
+
+The sponsor probably meant 1.05e18. Otherwise, OUSD and the shares associated with rOUSG will all be diminished/shifted by two decimals. Setting the `MINIMUM_OUSG_PRICE` to `105e18` instead of the intended `1.05e18` may not pose a direct security vulnerability but can significantly impact the contract's functionality and economics. Such a high threshold could inadvertently block minting and redemption processes such as those integrated via a router, skew the token's economic mechanisms and exchange rates, disrupt interactions with other DeFi contracts, and degrade user experience due to unrealistic operational conditions. Correcting this error post-deployment, especially on immutable platforms like Ethereum, would be challenging and costly, necessitating a potential contract migration and updates across dependent systems. This underscores the importance of rigorous review and testing of smart contract parameters to avoid such impactful errors.
 
 ## [L-06] Modifier for `getOUSGPrice()`
 `_mint()` having the following code logic,
@@ -96,7 +98,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
 ```solidity
     uint256 ousgPrice = getOUSGPrice();
 ```
-should be prepended with `getOUSGPrice()` as modifier for better visibility and cleaner code logic. 
+should be prepended with `getOUSGPrice()` as modifier for better visibility, cleaner code logic, and earlier revert when need be. 
 
 ## [L-07] Helper view functions for previewing conversions between OUSG and USDC
 Consider introducing view functions in ousgInstantManager.sol for previewing conversions between OUSG and USDC where possible so that investors may better manage their [mints](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L290)/[redeems](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L406) with the anticipated [ousgAmountOut](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L237)/[usdcAmountOut](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L342) just as it has been introduced in rOUSG.sol:
