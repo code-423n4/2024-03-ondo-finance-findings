@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Arz",
+  "risk": "2",
+  "title": "The contract assumes that the price of USDC is always $1.00 which will be a problem if the price depegs",
+  "issueId": 297,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/297"
+}
