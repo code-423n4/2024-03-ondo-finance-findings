@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "samuraii77",
+  "risk": "2",
+  "title": "redeemPaused and mintPaused could be out of sync causing users to be able to mint tokens but not be able to redeem them afterwards",
+  "issueId": 275,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/275"
+}
