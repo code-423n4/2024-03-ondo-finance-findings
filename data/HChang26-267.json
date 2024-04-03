@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "HChang26",
+  "risk": "3",
+  "title": "Balance check in `_redeemBUIDL()` can cause `redeem()` to fail",
+  "issueId": 267,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/267"
+}
