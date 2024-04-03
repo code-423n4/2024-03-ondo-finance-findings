@@ -389,3 +389,75 @@ The whenNotPaused modifier is used on the `wrap`, `unwrap`, `_mintShares`, `_bur
   }
 ```
 ***
+# 12. Excess ETH from multicall not refunded 
+
+Lines of code* 
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L794
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSGFactory.sol#L121
+
+### Impact
+In `rOUSGFactory` and `ousgInstantManager` contracts, the `multiexcall` is payable and takes in `ETH`.  After calling an external contract and forwards some ETH value, the contract balance should be checked. If there is excess eth left over due to a failed call, or more eth being delivered than needed, or any other reason, this eth must be refunded handled appropriately, otherwise the eth may be frozen in the contract forever.
+
+```solidity
+  function multiexcall(
+    ExCallData[] calldata exCallData
+  )
+    external
+    payable
+    override
+    onlyRole(DEFAULT_ADMIN_ROLE)
+    returns (bytes[] memory results)
+  {
+    results = new bytes[](exCallData.length);
+    for (uint256 i = 0; i < exCallData.length; ++i) {
+      (bool success, bytes memory ret) = address(exCallData[i].target).call{
+        value: exCallData[i].value
+      }(exCallData[i].data);
+      require(success, "Call Failed");
+      results[i] = ret;
+    }
+  }
+```
+### Recommended Mitigation Steps
+Consider including a check for excess tokens and returning it to the sender
+***
+***
+
+# 13. `retrieveTokens` function cannot withdraw `ETH`
+
+Lines of code* 
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L819
+
+### Impact
+
+The `ousgInstantManager` contract can receive `ETH` through the `multiexcall` function which is marked `payable`. The function however doesn't refund any excess `ETH` sent back to the sender. A possible way to handle this is through the `retrieveTokens` function which the admin can use to rescue any possible stranded tokens in the contract. 
+However, the function doesn't account for `ETH` which means that any excess `ETH` sent to the contract will be lost.
+
+```solidity
+  function retrieveTokens(
+    address token,
+    address to,
+    uint256 amount
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    IERC20(token).transfer(to, amount);
+  }
+```
+### Recommended Mitigation Steps
+
+Consider refactoring the function to handle `ETH` too, as an example.
+```solidity
+  function retrieveTokens(
+    address token,
+    address to,
+    uint256 amount
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    if (token == ETH){
+     to.call{value: amount}("");
+     }
+    else{
+    IERC20(token).transfer(to, amount);
+    }
+  }
+```
+***
