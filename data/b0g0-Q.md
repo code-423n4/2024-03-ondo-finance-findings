@@ -26,6 +26,23 @@ Consider removing the `whenNotPaused` modifier from `_approve()`.
 
 Since the returndata from every call inside Multicall is not consumed using assembly it can be DOSed by returning too much data from the target address
 
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSGFactory.sol#L126
+
+```solidity
+  function multiexcall(
+    ExCallData[] calldata exCallData
+  ) external payable override onlyGuardian returns (bytes[] memory results) {
+    results = new bytes[](exCallData.length);
+    for (uint256 i = 0; i < exCallData.length; ++i) {
+      (bool success, bytes memory ret) = address(exCallData[i].target).call{
+        value: exCallData[i].value
+      }(exCallData[i].data);
+      require(success, "Call Failed");
+      results[i] = ret;
+    }
+  }
+```
+
 Use assembly to limit the bytes of data that will be loaded into memory
 
 ## [L-04] Missing safe wrapper for ERC20 transfer in `OUSGInstantManager.retrieveTokens()`
@@ -36,7 +53,77 @@ Use a “safe” wrapper to execute ERC20 transfer for better compatibility.
 
 ERC20 operations on arbitrary tokens should be [safely wrapped](https://docs.openzeppelin.com/contracts/4.x/api/token/erc20#SafeERC20) to account for incompatible implementations.
 
-## [L-05] Missing zero address checks at a couple of functions
+## [L-05] Updating `instantMintLimit` inside TimeBasedRateLimiter does not reset the `currentInstantMintAmount` if set to 0, leading to overflow errors
+
+This is how rate limiting gets calculated inside the `TimeBasedRateLimiter`:
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/InstantMintTimeBasedRateLimiter.sol#L93
+
+```solidity
+function _checkAndUpdateInstantMintLimit(uint256 amount) internal {
+    ....
+    if (
+      block.timestamp >= lastResetInstantMintTime + resetInstantMintDuration
+    ) {
+      // time has passed, reset
+      currentInstantMintAmount = 0;
+      lastResetInstantMintTime = block.timestamp;
+    }
+    require(
+      amount <= instantMintLimit - currentInstantMintAmount,
+      "RateLimit: Mint exceeds rate limit"
+    );
+
+    .....
+  }
+```
+
+In case `instantMintLimit` is set to 0 (disable minting) and `currentInstantMintAmount` is not reset it will revert with overflow error
+
+Update setter function like so:
+
+```solidity
+function _setInstantMintLimit(uint256 _instantMintLimit) internal {
+    if(_instantMintLimit== 0){
+     currentInstantMintAmount = 0; <----------------
+    };
+
+    instantMintLimit = _instantMintLimit;
+    emit InstantMintLimitSet(_instantMintLimit);
+  }
+```
+## [L-06] Switch checks inside `OUSGInstantManager._redeem()`
+
+In the following succession of checks:
+
+```solidity
+ if (usdcAmountToRedeem >= minBUIDLRedeemAmount) {
+      // amount of USDC needed is over minBUIDLRedeemAmount, do a BUIDL redemption
+      // to cover the full amount
+      _redeemBUIDL(usdcAmountToRedeem);
+    } else if (usdcAmountToRedeem > usdcBalance) {
+      // There isn't enough USDC held by this contract to cover the redemption,
+      // so we perform a BUIDL redemption of BUIDL's minimum required amount.
+      // The remaining amount of USDC will be held in the contract for future redemptions.
+      _redeemBUIDL(minBUIDLRedeemAmount);
+      emit MinimumBUIDLRedemption(
+        msg.sender,
+        minBUIDLRedeemAmount,
+        usdcBalance + minBUIDLRedeemAmount - usdcAmountToRedeem
+      );
+    } else {
+      // We have enough USDC sitting in this contract already, so use it
+      // to cover the redemption and fees without redeeming more BUIDL.
+      emit BUIDLRedemptionSkipped(
+        msg.sender,
+        usdcAmountToRedeem,
+        usdcBalance - usdcAmountToRedeem
+      );
+```
+
+The `if(usdcAmountToRedeem < usdcBalance)` check should be placed first, this way if there is is enough leftover USDC in the contract, no BUILD redemptions will be made => less USDC which does not earn yield will stay in the contract.
+
+## [L-07] Missing zero address checks at a couple of functions
 
 - `ROUSG.__rOUSG_init_unchained()` - no check for `_ousg, _oracle, guardian` addresses
 - `ROUSGFactory.constructor()` - no check for the `guardian` address
@@ -50,7 +137,7 @@ ERC20 operations on arbitrary tokens should be [safely wrapped](https://docs.op
 - `__AccessControl_init`
 -  `__Pausable_init()`
 
-## [N-02] Increase/DecreaseAllowance methods can be removed 
+## [N-02] Increase/DecreaseAllowance methods can be removed from `ROUSG`
 
 The 2 methods have recently been removed from the OZ ERC20 standard due to reported risk of phishing attack. You can consider removing them.
 
