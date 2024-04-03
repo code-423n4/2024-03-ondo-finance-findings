@@ -6,6 +6,8 @@ Most probably the users will have MAX approval for transferring tokens, so the `
 
 https://github.com/lidofinance/lido-dao/commit/e9509d77f010fec76899e25ccde785c8de47bd42
 
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L276-L287
+
 ```solidity
   function transferFrom(
     address _sender,
@@ -26,6 +28,8 @@ https://github.com/lidofinance/lido-dao/commit/e9509d77f010fec76899e25ccde785c8d
 ## Description
 
 All `public` functions in the `rOUSG.sol` contract, which are not called inside the contract, can be marked as `external` in order to save gas:
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol
 
 ```solidity
 function allowance(address _owner, address _spender) public view returns (uint256) {}
