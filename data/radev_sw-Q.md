@@ -2594,3 +2594,33 @@ The default value for variables is zero, so initializing them to zero is superfl
 </details>
 
 ---
+
+## 34. 
+## Impact
+
+`OUSG` & `rOUSG` tokens can not be instant minted under certain condition
+
+## Proof of Concept
+
+`OUSG` & `rOUSG` tokens can not be instant minted under certain situation: 1. `OUSGInstantManager.sol#minimumDepositAmount = 60_000e6; InstantMintTimeBasedRateLimiter.sol#instantMintLimit = 50_000e6;` 2. Alice tries to mint (deposit) `60_000e6`, but the mint function will revert, because in `InstantMintTimeBasedRateLimiter.sol#_checkAndUpdateInstantMintLimit()` function this check will revert (`60_000e6 < 50_000e6`):
+
+```solidity
+    require(
+      amount <= instantMintLimit - currentInstantMintAmount,
+      "RateLimit: Mint exceeds rate limit"
+    );
+```
+
+The problem cause when `OUSGInstantManager.sol#minimumDepositAmount` is greater than `InstantMintTimeBasedRateLimiter.sol#instantMintLimit`.
+
+The exact same issue exists and in redemption process.
+
+Important to note that this situation and the issue overall is different from the instant mint/redeem flow.
+
+## Tools Used
+
+Manual Review
+
+## Recommended Mitigation Steps
+
+During the changing of `instantMintLimit` and `instantRedemptionLimit` doesn't allow to can be set with values smaller than `minimumDepositAmount` and `minimumRedemptionAmount`.
