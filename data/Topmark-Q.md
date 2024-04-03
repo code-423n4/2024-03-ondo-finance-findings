@@ -1,5 +1,5 @@
 ### Report 1:
-#### Typographical Error
+#### Loss of fund from Precision Loss when Scaling Down Token Conversion
  
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L704
 ```solidity
