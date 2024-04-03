@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "sekkiat",
+  "risk": "2",
+  "title": "An unbounded loop could lead to a denial-of-service (DOS) attack or Increase Gas Fees",
+  "issueId": 173,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/173"
+}
