@@ -200,6 +200,22 @@ function _redeemBUIDL(uint256 buidlAmountToRedeem) internal {
   }
  ```
 
+### [l-04] The `multiexcall` function can revert if contract can't accept ETH.
+
+**Description:** 
+As the readme of contest sates "The permissioned multicall function on OUSGInstantManager will only be used to transfer non-ERC20 assets out of the contract if the assets are accidentally deposited." If any one of the arbitrary contract does not accepts the ether than it will revert the whole `multiexcall` function transaction. 
+
+**Proof of Concept:**
+1. As the contest readme quotes `multiexcall` function is used to transfer non-ERC20 assets out of the contract is the asset are accidentally deposited.
+2. The `multiexcall` function is transferring eth to the multiple addresses.
+3. If any of the arbitrary address can't accepts eth than the whole tx will revert.
+
+**Impact:** 
+The transferring of eth to multiple addresses will revert.
+
+**Recommended Mitigation:** 
+The recommended mitigation is that the admin needs to  remove th address from the array which is causing revert. 
+
 ### [NC-01] Missing calls to base initializers in `rOUSG` contract
 
 **Description:** 
