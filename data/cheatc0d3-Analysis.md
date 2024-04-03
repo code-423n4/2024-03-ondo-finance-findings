@@ -85,7 +85,9 @@ The absence of checks for zero addresses and the lack of a robust role managemen
 
 ## Conclusion
 
-The security audit of Ondo Finance's deployment of rOUSG and the OUSGInstantManager contract has illuminated several areas of improvement, ranging from high to low priority issues. Our detailed analysis highlights the innovative approach Ondo Finance has taken to blend traditional financial instruments with the cutting-edge capabilities of decentralized finance (DeFi). This synergy aims to provide users with a stable and efficient platform for engaging with tokenized US Short Term Government Bonds, reflecting a significant step forward in the evolution of DeFi.
+The security audit of Ondo Finance's deployment of rOUSG and the OUSGInstantManager contract has illuminated several areas of improvement, ranging from high to low priority issues. The detailed analysis highlights the innovative approach Ondo Finance has taken to blend traditional financial instruments with the cutting-edge capabilities of decentralized finance (DeFi). This synergy aims to provide users with a stable and efficient platform for engaging with tokenized US Short Term Government Bonds, reflecting a significant step forward in the evolution of DeFi.
+
+
 
 ### Time spent:
 32 hours
