@@ -108,3 +108,23 @@ Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 24.89ms (1.44ms CPU
 }
   }
 ```
+
+
+### [L-3] The `rousg.sol` contract inherits `IERC20Upgradeable.sol` but it's useless because `IERC20MetadataUpgradeable.sol` is already inherited by `IERC20Upgradeable.sol`
+
+**Description** the `rousg.sol` contract inherits `IERC20Upgradeable.sol` but it's useless because `IERC20MetadataUpgradeable.sol` is already inherited by `IERC20Upgradeable.sol` and it's not necessary to inherit `IERC20Upgradeable.sol` in `rousg.sol` contract.
+
+**Impact** it's not a security issue but it's a useless inheritance and it's better to remove it to make the code cleaner.
+
+**Recommend Mitigation** remove the inheritance of `IERC20Upgradeable.sol` in `rousg.sol` contract
+```diff
+   contract ROUSG is
+  Initializable,
+  ContextUpgradeable,
+  PausableUpgradeable,
+  AccessControlEnumerableUpgradeable,
+  KYCRegistryClientUpgradeable,
+-  IERC20Upgradeable,
+  IERC20MetadataUpgradeable
+{
+```
