@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "__naman_",
+  "risk": "2",
+  "title": "msg.sender get approval of token when it is being transferred from _sender to _recipient",
+  "issueId": 325,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/325"
+}
