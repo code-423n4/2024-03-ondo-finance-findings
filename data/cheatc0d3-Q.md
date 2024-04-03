@@ -1,3 +1,5 @@
+# QA Report: Ondo Finance
+
 ## L-01 Admin setter functions can be misused due to lack of explicit sanity checks
 
 The setMintFee and setRedeemFee functions allow an admin to set fees for minting and redeeming operations. While there's a basic check `require(mintFee < 200, "OUSGInstantManager::setMintFee: Fee too high");`, it's relatively loose and only ensures that fees are below 200 basis points (2%). There's a risk that fees could be set unreasonally high within the allowed range, potentially deterring users from engaging with the contract or eroding trust.
