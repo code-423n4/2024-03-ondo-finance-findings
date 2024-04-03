@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "MaslarovK",
+  "risk": "2",
+  "title": "Rate limit will be updated every transaction instead of every block",
+  "issueId": 300,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/300"
+}
