@@ -9,6 +9,7 @@
 | [L-02] | Investors can't instant redeem when buidl token is paused        |
 | [L-03] | No price validation check in rOUSG                               |
 | [L-04] | rOUSG is not erc20 compliant                                     |
+| [L-05] | Incorrect check in _redeemBUIDL                                  |
 
 ## [L-01] Funds will become inaccessible when USDC blacklists a user
 
@@ -120,4 +121,61 @@ Consider checking the returned value and reverting if false is returned. For exa
 
 ```solidity
 require(ousg.transferFrom(msg.sender, address(this), _OUSGAmount), "Transfer failed");
+```
+
+## [L-05] Incorrect check in _redeemBUIDL
+
+## Impact
+
+The _redeemBUIDL function within OUSGInstantManager contains an incorrect check that triggers the buidlRedeemer.redeem function even when there is "Insufficient BUIDL balance." This leads to unnecessary wastage of investors' gas fees.
+
+## Description
+
+The _redeemBUIDL function contains a check to ensure there is sufficient BUIDL balance in the contract. However, it erroneously checks the wrong value:
+
+```solidity
+  function _redeemBUIDL(uint256 buidlAmountToRedeem) internal {
+    require(
+      buidl.balanceOf(address(this)) >= minBUIDLRedeemAmount,
+      "OUSGInstantManager::_redeemBUIDL: Insufficient BUIDL balance"
+    );
+    uint256 usdcBalanceBefore = usdc.balanceOf(address(this)); // ok
+    buidl.approve(address(buidlRedeemer), buidlAmountToRedeem); // ok
+    buidlRedeemer.redeem(buidlAmountToRedeem);
+    require(
+      usdc.balanceOf(address(this)) == usdcBalanceBefore + buidlAmountToRedeem,
+      "OUSGInstantManager::_redeemBUIDL: BUIDL:USDC not 1:1"
+    );
+  }
+```
+
+The _redeemBUIDL function is called when usdcAmountToRedeem >= minBUIDLRedeemAmount, as shown here:
+
+```solidity
+if (usdcAmountToRedeem >= minBUIDLRedeemAmount) {
+      // amount of USDC needed is over minBUIDLRedeemAmount, do a BUIDL redemption
+      // to cover the full amount
+      _redeemBUIDL(usdcAmountToRedeem);
+```
+
+For example, if usdcAmountToRedeem is 300k USDC, and minBUIDLRedeemAmount is 250k BUIDL, _redeemBUIDL is called with usdcAmountToRedeem. The issue arises because it checks if the OUSGInstantManager BUIDL balance is more than minBUIDLRedeemAmount instead of usdcAmountToRedeem. Consequently, if there were 260k BUIDL in the OUSGInstantManager, the check ensuring sufficient balance would pass even when there is an insufficient balance, leading to wasted investor gas in a no-op situation.
+
+## Recommended Mitigation Steps
+
+Consider updating the _redeemBUIDL function check as follows:
+
+```solidity
+  function _redeemBUIDL(uint256 buidlAmountToRedeem) internal {
+    require(
+      buidl.balanceOf(address(this)) >= buidlAmountToRedeem,
+      "OUSGInstantManager::_redeemBUIDL: Insufficient BUIDL balance"
+    );
+    uint256 usdcBalanceBefore = usdc.balanceOf(address(this)); // ok
+    buidl.approve(address(buidlRedeemer), buidlAmountToRedeem); // ok
+    buidlRedeemer.redeem(buidlAmountToRedeem);
+    require(
+      usdc.balanceOf(address(this)) == usdcBalanceBefore + buidlAmountToRedeem,
+      "OUSGInstantManager::_redeemBUIDL: BUIDL:USDC not 1:1"
+    );
+  }
 ```
