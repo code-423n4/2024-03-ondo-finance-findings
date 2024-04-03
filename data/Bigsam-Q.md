@@ -13,7 +13,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03
 https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L608-L616
 
  
-The `setInvestorBasedRateLimiter` and `setOracle` functions allow the modification of the investor-based rate limiter and the oracle address, respectively. The impact of the finding is that there is no check to ensure that the newly passed addresses are not address zero (`0x0000000000000000000000000000000000000000`). These functions are crucial to the contract as the contract relies on them for input for sensitive data compilation. Although these functions are only called by the admin, efforts should be made to ensure that only valid addresses are passed. Without proper checks, such a scenario can lead to unexpected behavior and potential vulnerabilities in the smart contract. Therefore, it is considered good practice to implement checks for address(0x0) prior to assigning new values to address state variables.
+The `setInvestorBasedRateLimiter` , `setOracle` and other functions  allow the modification of the investor-based rate limiter and the oracle address. The impact of the finding is that there is no check to ensure that the newly passed addresses are not address zero (`0x0000000000000000000000000000000000000000`). These functions are crucial to the contract as the contract relies on them for input for sensitive data compilation. Although these functions are only called by the admin, efforts should be made to ensure that only valid addresses are passed. Without proper checks, such a scenario can lead to unexpected behavior and potential vulnerabilities in the smart contract. Therefore, it is considered good practice to implement checks for address(0x0) prior to assigning new values to address state variables.
 
 ## Proof of Concept
 The following is the code snippet of the `setInvestorBasedRateLimiter` and `setOracle` functions:
@@ -93,7 +93,7 @@ line 188  OUSGInstantManager.sol
 ```solidity
 require(
     IERC20Metadata(_ousg).decimals() == IERC20Metadata(_rousg).decimals(),
-    "OUSGInstantManager: OUSG decimals must be equal to USDC decimals" //@note audit USDC should be OUSG
+    "OUSGInstantManager: OUSG decimals must be equal to USDC decimals" //@note audit  should be rOUSG
 );
 ```
 
@@ -129,7 +129,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03
 
 
 ## Impact
-The setMintFee and setRedeemFee functions are used to set the mint and redeem fees, respectively, specified in basis points. Currently, the functions contain a requirement that the fee must be less than 200 basis points. Lowering the fee below this threshold may introduce several vulnerabilities and risks to the system, especially when other requirements like minimum deposits do not have a maximum cap limit thus when we reach a point based in the market cycle (bull and bear market scenario) that the fees collected will no longer be sufficiently equivalent to the corresponding market situation we are left with no option to update the fee. BNB,Eth and other token experiences gas fee increase for transactions when
+The setMintFee and setRedeemFee functions are used to set the mint and redeem fees, respectively, specified in basis points. Currently, the functions contain a requirement that the fee must be less than 200 basis points. Limiting the fee to this threshold may introduce several vulnerabilities and risks to the system, especially when other requirements like minimum deposits do not have a maximum cap limit and their present limit can be upgraded thus when we reach a point based in the market cycle (bull and bear market scenario) that the fees collected will no longer be sufficiently equivalent to the corresponding market situation but we are left with no option cause no update can be done on the fee. BNB,Eth and other token experiences gas fee increase for transactions when
  1. increase in market price (bull markets) 
  2. congestions e.t.c.
 
@@ -172,7 +172,7 @@ The presence of a maximum fee basic in these function and an absence of a maximu
 
 ## Recommended Mitigation Steps
 To address the identified issues in the `setMintFee` and `setRedeemFee` functions, consider the following steps:
-since other state variables as a function that regulates their total limit, Consider using a new variable (MAXFEE) that can be set like our limits.
+since other state variables as a function that regulates their total limit, Consider using a new variable (MAXFEE) that can be set like other limits.
  
 
 ---
@@ -195,7 +195,7 @@ The rOUSG contract is designed to manage the wrapping and unwrapping of OUSG tok
 
  1. Insufficient Comments in `burn` Function
 
-The `burn` function in the rOUSG contract has insufficient comments, which could lead to misunderstanding or misuse of the function. 
+The `burn` function in the rOUSG contract has insufficient comments, which could lead to misunderstanding or inability to use the function. 
 
 ```solidity
 /**
@@ -223,7 +223,7 @@ function burn(
 }
 ```
 
- Pause Mechanism Issue in `burn` and `_burnShares` Functions
+ Pause Mechanism Issue in `_burnShares` Functions
 
 The `burn` function calls the `_burnShares` function, which has a `whenNotPaused` modifier. This means that if the contract is paused, the `burn` function will revert.
 
@@ -248,7 +248,7 @@ function _burnShares(
 
  2. Insufficient Comments in `wrap` and `unwrap` Functions
 
-The `wrap` and `unwrap` functions also have insufficient comments, which can lead to misunderstandings or misuse.
+The `wrap` and `unwrap` functions also have insufficient comments, which can lead to misunderstandings .
 
 ```solidity
 /**
