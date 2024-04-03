@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Abdul",
+  "risk": "2",
+  "title": "Bad smart contract could cause whole transaction to revert ",
+  "issueId": 295,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/295"
+}
