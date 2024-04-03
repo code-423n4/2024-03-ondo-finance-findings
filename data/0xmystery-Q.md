@@ -70,6 +70,60 @@ function checkInstantMintLimit(uint256 amount) public view returns (bool permiss
 function checkInstantRedemptionLimit(uint256 amount) public view returns (bool permissible) {
     permissible = (amount <= instantRedemptionLimit - currentInstantRedemptionAmount);
 ``` 
+## [L-05] Possibly overinflated `MINIMUM_OUSG_PRICE`
+The oracle contracts are out of scope, but I am noticing `MINIMUM_OUSG_PRICE` might be inflated by two decimals:
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L63
+
+```solidity
+  uint256 public constant MINIMUM_OUSG_PRICE = 105e18;
+```
+The sponsor probably meant 1.05e18. Otherwise, OUSD and the shares associated with rOUSG will all be diminished/shifted by two decimals.
+
+## [L-06] Modifier for `getOUSGPrice()`
+`_mint()` having the following code logic,
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L306-L307
+
+```solidity
+    // Calculate the mint amount based on mint fees and usdc quantity
+    uint256 ousgPrice = getOUSGPrice();
+```
+as well as `_redeem()` having similar code logic below,
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L399
+
+```solidity
+    uint256 ousgPrice = getOUSGPrice();
+```
+should be prepended with `getOUSGPrice()` as modifier for better visibility and cleaner code logic. 
+
+## [L-07] Helper view functions for previewing conversions between OUSG and USDC
+Consider introducing view functions in ousgInstantManager.sol for previewing conversions between OUSG and USDC where possible so that investors may better manage their [mints](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L290)/[redeems](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L406) with the anticipated [ousgAmountOut](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L237)/[usdcAmountOut](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L342) just as it has been introduced in rOUSG.sol:
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L185-L203
+
+```solidity
+  /**
+   * @return the amount of tokens in existence.
+   */
+  function totalSupply() public view returns (uint256) {
+    return
+      (totalShares * getOUSGPrice()) / (1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER);
+  }
+
+  /**
+   * @return the amount of tokens owned by the `_account`.
+   *
+   * @dev Balances are dynamic and equal the `_account`'s OUSG shares multiplied
+   *      by the price of OUSG
+   */
+  function balanceOf(address _account) public view returns (uint256) {
+    return
+      (_sharesOf(_account) * getOUSGPrice()) /
+      (1e18 * OUSG_TO_ROUSG_SHARES_MULTIPLIER);
+  } 
+```
 ## [NC-01] Erroneous require message
 Consider having the following code line refactored to accurately portray the supposed message:   
 
