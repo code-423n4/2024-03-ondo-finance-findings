@@ -1,14 +1,13 @@
-# 1. Redemptions can be partially blocked if `BUIDL` or `USDC` gets paused.
+# 1. Redemptions can be partially blocked if `BUIDL` gets paused.
 
 Lines of code* 
 
 https://etherscan.io/address/0x603bb6909be14f83282e03632280d91be7fb83b2#readContract#F32
-https://etherscan.io/address/0x43506849d7c04f9138d1a2050bbf3a0c054402dd#readContract#F19
 https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/ousgInstantManager.sol#L426C1-L440C6
 
 ### Impact
 
-In certain cases during redemption, the protocol might need to redeem `BUIDL` to buff up the amount of USDC in the contract. `Buidl` token is pausable and when paused, will not be transferrable. This can lead to temporary halting of redemptions for users swapping large amounts. 
+In certain cases during redemption, the protocol might need to redeem `BUIDL` to buff up the amount of `USDC` in the contract. `Buidl` token is pausable and when paused, will not be transferrable. This can lead to temporary halting of redemptions for users swapping large amounts. 
 ```
   function _redeem(
     uint256 ousgAmountIn
@@ -31,9 +30,6 @@ In certain cases during redemption, the protocol might need to redeem `BUIDL` to
 ...
   }
 ```
-
-The same also applies to USDC, which when paused, doesn't allow transfers. 
-If this happens, redemptions and minting will be fully impossible.
 
 ***
 
@@ -191,7 +187,7 @@ During redemption, `USDC` is transferred directly to `msg.sender`. However, `usd
 ***
 
 
-# 5. Setting the `minBUIDLRedeemAmount` less than `BUIDL` redemption minimum requirement can lead to accidental user griefing.
+# 5. Setting the `minBUIDLRedeemAmount` less than `BUIDL` redemption minimum requirement can unintentionally lock redemption.
 
 Lines of code*
 
@@ -236,7 +232,7 @@ Lines of code*
  
 https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L231
 
-## Impact
+### Impact
 
 The ERC20 permit functionality is a streamlined, gas efficient and pretty secure way of granting approvals (with limits and deadlines) to spenders. It's become a major feature of many ERC20 tokens and many protocols in the sphere. The `rOUSG` token however doesn't hold a permit function, thereby missing out on its various advantages and flexibility. Consider introducing the functionality to improve user experience and help with external integrations.
 
@@ -249,7 +245,7 @@ Lines of code*
  
 https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L276-L287
 
-## Impact
+### Impact
 The `transferFrom` function checks for spender's allowance and decreases accordingly before transfer. It however doesn't account for approval type.(uint256)max, which is universally considered to be max approval. Due to the possibly large amounts of tokens that will be in move in the protocol, checking for max approval is a nice feature to have. 
 ```
   function transferFrom(
@@ -265,7 +261,7 @@ The `transferFrom` function checks for spender's allowance and decreases accordi
     return true;
   }
 ```
-## Recommended Mitigation Steps
+### Recommended Mitigation Steps
 Consider not reducing user's approval is they're max approved.
 ```
   function transferFrom(
@@ -293,10 +289,10 @@ Lines of code*
 
 https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L276-L287
 
-## Impact
+### Impact
 
 In certain cases, the token owner might want to perform a `transferFrom` from itself to another user. A nice to have feature is to not require the owner to have to approve himself to spend his own tokens before he can perform a `tranferFrom`. This can be fixed by skipping the allowance check if `msg.sender` == `_sender`.
-## Recommended Mitigation Steps
+### Recommended Mitigation Steps
 ```
   function transferFrom(
     address _sender,
@@ -316,3 +312,80 @@ In certain cases, the token owner might want to perform a `transferFrom` from it
   }
 ```
 
+***
+
+
+# 9. Redemption will be completely broken if `USDC` gets paused
+
+Lines of code*
+ 
+https://etherscan.io/address/0x43506849d7c04f9138d1a2050bbf3a0c054402dd#readContract#F19
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L317
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L319
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L451
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L455
+
+### Impact
+
+`ousgInstantManager` is fully dependent `USDC` token for deposits and redemption. The issue is that `USDC` is a pausable token, upon which its transfers are prohibited. If this happens, token redemptions will be completely blocked.
+
+### Recommended Mitigation Steps
+Consider introducing an emergency token, like `USDT` that users can redeem their `OUSG` and `rOUSG` for.
+
+***
+
+# 10. Admin roles can be reounced
+
+Lines of code* 
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/external/openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L219
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/external/openzeppelin/contracts/access/AccessControl.sol#L191
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/rOUSG.sol#L24
+https://github.com/code-423n4/2024-03-ondo-finance/blob/78779c30bebfd46e6f416b03066c55d587e8b30b/contracts/ousg/ousgInstantManager.sol#L18
+
+### Impact
+`rOUSG.sol` and  `ousgInstantManager.sol` inherit openzeppelin's `AccessControlEnumerable` and `AccessControlEnumerableUpgradeable` contracts, which both feature the `renounceRole` function. Permissioned functions in these contracts will be lost if these roles are renounced not by design.
+
+### Recommended Mitigation Steps
+Consider overriding the `renounceRole` functions and reverting when they're called.
+***
+
+***
+
+# 11. `whenNotPaused` modifier can be moved from major functions into a general internal function
+
+Lines of code* 
+
+https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L415
+https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L431
+https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L505
+https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L529
+https://github.com/code-423n4/2024-03-ondo-finance/blob/be2e9ebca6fca460c5b0253970ab280701a15ca1/contracts/ousg/rOUSG.sol#L557
+
+### Impact
+The whenNotPaused modifier is used on the `wrap`, `unwrap`, `_mintShares`, `_burnShares` and `_transferShares` functions. These functions all call the `_beforeTokenTransfer` hook. As a bit of refactoring, consider moving the modifier from these functions into the `beforeTokenTransfer` function instead.
+
+```solidity
+  function _beforeTokenTransfer(
+    address from,
+    address to,
+    uint256
+  ) internal view whenNotPaused {
+    // Check constraints when `transferFrom` is called to facliitate
+    // a transfer between two parties that are not `from` or `to`.
+    if (from != msg.sender && to != msg.sender) {
+      require(_getKYCStatus(msg.sender), "rOUSG: 'sender' address not KYC'd");
+    }
+
+    if (from != address(0)) {
+      // If not minting
+      require(_getKYCStatus(from), "rOUSG: 'from' address not KYC'd");
+    }
+
+    if (to != address(0)) {
+      // If not burning
+      require(_getKYCStatus(to), "rOUSG: 'to' address not KYC'd");
+    }
+  }
+```
+***
