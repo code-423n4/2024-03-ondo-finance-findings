@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Shubham",
+  "risk": "2",
+  "title": "Admin can’t burn tokens from blocklisted addresses (removed from the kyc registry) because of a check in _beforeTokenTransfer",
+  "issueId": 210,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/210"
+}
