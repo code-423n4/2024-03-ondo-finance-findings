@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "niser93",
+  "risk": "2",
+  "title": "getOUSGPrice() functions doesn't care about price timestamp and is vulnerable to oracle malfunctions",
+  "issueId": 251,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/251"
+}
