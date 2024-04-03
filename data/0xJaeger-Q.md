@@ -43,8 +43,11 @@ Please modify like below:
   }
 ```
 
+**[NC-1] whenNotPaused should be moved from internal to external functions.**
+-
+The `whenNotPaused` modifier should be relocated to the external `rOUSG::burn`, `rOUSG::approve`, `rOUSG::transferFrom`, `rOUSG::transfer`, `rOUSG::increaseAllowance`, and `rOUSG::decreaseAllowance` functions instead of the internal `rOUSG::_burn`, `rOUSG::_approve`, and `rOUSG::_transferShares` functions. This adjustment enhances code readability and maintains consistency, aligning with the placement of other `whenNotPaused` modifiers on external functions. By advancing the modifier, gas savings can also be achieved.
 
-**[NC-1] Require statement not necessary for checking if contract has sufficient allowance.**
+**[NC-2] Require statement not necessary for checking if contract has sufficient allowance.**
 -
 There is no need for a require statement to check if there are sufficient allowances for the contract, as it will revert during transfer if there is insufficient allowance.
 
@@ -66,7 +69,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
 ```
 
 
-**[NC-2] Missing @return natspec for rOUSG::getOUSGPrice()**
+**[NC-3] Missing @return natspec for rOUSG::getOUSGPrice()**
 -
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L378-L380
 ```diff
@@ -78,7 +81,7 @@ function getOUSGPrice() public view returns (uint256 price) {
   }
 ```
 
-**[NC-3] Code readeability improvements for `rOUSG::_transferShares`, `rOUSG::_mintShares`, `rOUSG::_burnShares`**
+**[NC-4] Code readeability improvements for `rOUSG::_transferShares`, `rOUSG::_mintShares`, `rOUSG::_burnShares`**
 -
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L529
 ```diff
@@ -145,7 +148,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUS
   }
 ```
 
-**[NC-4] Fix math in rOUSG natspec**
+**[NC-5] Fix math in rOUSG natspec**
 -
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L28-L53
 ```diff
@@ -174,7 +177,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUS
 ```
 
 
-**[NC-5] Improve readability in `ousgInstantManager::getOUSGPrice()` notice**
+**[NC-6] Improve readability in `ousgInstantManager::getOUSGPrice()` notice**
 -
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L472-L478
 ```diff
@@ -189,7 +192,7 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousg
    */
 ```
 
-**[NC-6] Wrong link in `ousgInstantManager::increaseAllowance()` notice**
+**[NC-7] Wrong link in `ousgInstantManager::increaseAllowance()` notice**
 -
 https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L472-L478
 ```diff
