@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "kartik_giri_47538",
+  "risk": "2",
+  "title": "Admin can't burn rOUSG tokens if account is remove from KYC list or sanctioned.",
+  "issueId": 206,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/206"
+}
