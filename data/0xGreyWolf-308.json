@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xGreyWolf",
+  "risk": "3",
+  "title": "The oracle price fetch in `OUSGInstantManager::getOUSGPrice()` does not have sanity check if the price is unexpectedly high",
+  "issueId": 308,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/308"
+}
