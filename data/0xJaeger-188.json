@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xJaeger",
+  "risk": "2",
+  "title": "rOUSG::getOUSGPrice(), ousgInstantManager::getOUSGPrice() might get stale or incorrect results.",
+  "issueId": 188,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/188"
+}
