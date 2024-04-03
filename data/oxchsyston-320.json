@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "oxchsyston",
+  "risk": "2",
+  "title": "`Users` cannot redeem their shares if either `unwrap` or `burnShares` is paused",
+  "issueId": 320,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/320"
+}
