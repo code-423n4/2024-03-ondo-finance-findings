@@ -156,3 +156,24 @@ In scope there are two `getOUSGPrice()` functions [ousgInstantManager.getOUSGPri
 
 They are quite different. We reported in another issue that `rOUSG.getOUSGPrice()` doesn't have a protection against too low price from oracle.
 It can be useful to create a common contract and use it to implement common functionalities.
+
+# NC4 - ```require()``` should be used instead of ```assert()```
+The ```assert()``` statement is used in development, but ```require()``` should be used in production.
+The is 1 instance of this in [rOUSGFactory.sol#L94](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSGFactory.sol#L94)
+
+```
+94       assert(rOUSGProxyAdmin.owner() == guardian);
+```
+
+# NC5 - Let's use named mapping
+The ```assert()``` statement is used in development, but ```require()``` should be used in production.
+The is 1 instance of this in [rOUSGFactory.sol#L94](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSGFactory.sol#L94)
+
+[rOUSG.sol#L72](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L72)
+
+[rOUSG.sol#L75](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L75)
+
+```
+72     mapping(address => uint256) private shares;
+75     mapping(address => mapping(address => uint256)) private allowances;
+```
