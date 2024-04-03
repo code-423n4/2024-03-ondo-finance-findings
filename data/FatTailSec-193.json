@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "FatTailSec",
+  "risk": "2",
+  "title": "Wrong Event Params in `burn(address,uint256)`",
+  "issueId": 193,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/193"
+}
