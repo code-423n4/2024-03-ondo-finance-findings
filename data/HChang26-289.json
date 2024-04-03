@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "HChang26",
+  "risk": "3",
+  "title": "OUSGInstantManager.sol incorrectly assumes value of USDC is always $1  f",
+  "issueId": 289,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/289"
+}
