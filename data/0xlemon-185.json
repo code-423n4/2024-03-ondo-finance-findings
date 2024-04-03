@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xlemon",
+  "risk": "2",
+  "title": "Users are unable to mint/redeem if the oracle price is equal to MINIMUM_OUSG_PRICE",
+  "issueId": 185,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/185"
+}
