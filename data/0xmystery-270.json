@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "0xmystery",
+  "risk": "2",
+  "title": "Redemption Limitation Issue in ousgInstantManager.sol that Could Lead to Investors' OUSG Stuck in the Contract",
+  "issueId": 270,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/270"
+}
