@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "btk",
+  "risk": "2",
+  "title": "OUSGInstantManager will not provide instant redemption even when there is enough tokens",
+  "issueId": 235,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/235"
+}
