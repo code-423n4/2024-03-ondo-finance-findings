@@ -177,3 +177,124 @@ The is 1 instance of this in [rOUSGFactory.sol#L94](https://github.com/code-423n
 72     mapping(address => uint256) private shares;
 75     mapping(address => mapping(address => uint256)) private allowances;
 ```
+
+# NC6 - Calls to ```keccak256()``` should use ```immutable``` rather than ```constant```
+
+[ousgInstantManager.sol#L57](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L57)
+
+[ousgInstantManager.sol#L60](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L60)
+```
+57     bytes32 public constant CONFIGURER_ROLE = keccak256("CONFIGURER_ROLE");
+60     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+```
+
+
+[rOUSG.sol#93](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L93)
+
+[rOUSG.sol#94](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L94)
+
+[rOUSG.sol#95](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/rOUSG.sol#L95)
+
+```
+93     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+94     bytes32 public constant BURNER_ROLE = keccak256("BURN_ROLE");
+95     bytes32 public constant CONFIGURER_ROLE = keccak256("CONFIGURER_ROLE");
+```
+
+# NC7 - Setters should prevent re-setting of the same value
+This especially problematic when the setter also emits the same value, which may be confusing to offline parsers.
+Moreover, when it is set a state variable, it wastes gas.
+
+```
+File: ousgInstantManager.sol
+
+@audit: values to prevent: _mintFee
+554    function setMintFee(
+555      uint256 _mintFee
+556    ) external override onlyRole(CONFIGURER_ROLE) {
+557      require(mintFee < 200, "OUSGInstantManager::setMintFee: Fee too high");
+558      emit MintFeeSet(mintFee, _mintFee);
+559      mintFee = _mintFee;
+560    }
+
+@audit: values to prevent: _redeemFee
+567    function setRedeemFee(
+568      uint256 _redeemFee
+569    ) external override onlyRole(CONFIGURER_ROLE) {
+570      require(redeemFee < 200, "OUSGInstantManager::setRedeemFee: Fee too high");
+571      emit RedeemFeeSet(redeemFee, _redeemFee);
+572      redeemFee = _redeemFee;
+573    }
+
+@audit: values to prevent: _minimumDepositAmount
+581    function setMinimumDepositAmount(
+582      uint256 _minimumDepositAmount
+583    ) external override onlyRole(CONFIGURER_ROLE) {
+584      require(
+585        _minimumDepositAmount >= FEE_GRANULARITY,
+586        "setMinimumDepositAmount: Amount too small"
+587      );
+588  
+589      emit MinimumDepositAmountSet(minimumDepositAmount, _minimumDepositAmount);
+590      minimumDepositAmount = _minimumDepositAmount;
+591    }
+
+@audit: values to prevent: _minimumRedemptionAmount
+599    function setMinimumRedemptionAmount(
+600      uint256 _minimumRedemptionAmount
+601    ) external override onlyRole(CONFIGURER_ROLE) {
+602      require(
+603        _minimumRedemptionAmount >= FEE_GRANULARITY,
+604        "setMinimumRedemptionAmount: Amount too small"
+605      );
+606      emit MinimumRedemptionAmountSet(
+607        minimumRedemptionAmount,
+608        _minimumRedemptionAmount
+609      );
+610      minimumRedemptionAmount = _minimumRedemptionAmount;
+611    }
+
+@audit: values to prevent: _minimumBUIDLRedemptionAmount
+622    function setMinimumBUIDLRedemptionAmount(
+623      uint256 _minimumBUIDLRedemptionAmount
+624    ) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+625      emit MinimumBUIDLRedemptionAmountSet(
+626        minBUIDLRedeemAmount,
+627        _minimumBUIDLRedemptionAmount
+628      );
+629      minBUIDLRedeemAmount = _minimumBUIDLRedemptionAmount;
+630    }
+
+@audit: values to prevent: _oracle
+638    function setOracle(
+639      address _oracle
+640    ) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+641      emit OracleSet(address(oracle), _oracle);
+642      oracle = IRWAOracle(_oracle);
+643    }
+
+@audit: values to prevent: _investorBasedRateLimiter
+663    function setInvestorBasedRateLimiter(
+664      address _investorBasedRateLimiter
+665    ) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+666      emit InvestorBasedRateLimiterSet(
+667        address(investorBasedRateLimiter),
+668        _investorBasedRateLimiter
+669      );
+670      investorBasedRateLimiter = IInvestorBasedRateLimiter(
+671        _investorBasedRateLimiter
+672      );
+673    }
+
+```
+
+```
+File: rOUSG.sol
+
+@audit: values to prevent: _oracle
+613    function setOracle(address _oracle) external onlyRole(DEFAULT_ADMIN_ROLE) {
+614      emit OracleSet(address(oracle), _oracle);
+615      oracle = IRWAOracle(_oracle);
+616    }
+
+```
