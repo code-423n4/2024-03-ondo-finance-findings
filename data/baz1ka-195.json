@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "baz1ka",
+  "risk": "2",
+  "title": "Current implementation of `ousgInstantManager.getOUSGPrice()` can potentially lead mint and redeem processes to stop in `ousgInstantManager`.",
+  "issueId": 195,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/195"
+}
