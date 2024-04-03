@@ -1,0 +1,8 @@
+{
+  "contest": 357,
+  "handle": "Limbooo",
+  "risk": "2",
+  "title": "Admin can’t burn tokens from either revoked KYC addresses or KYC addresses added to sanction list due to a check in _beforeTokenTransfer",
+  "issueId": 314,
+  "issueUrl": "https://github.com/code-423n4/2024-03-ondo-finance-findings/issues/314"
+}
