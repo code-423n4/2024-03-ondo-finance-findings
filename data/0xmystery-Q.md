@@ -50,11 +50,26 @@ https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/InstantMi
       "RateLimit: Redemption exceeds rate limit"
     );
 ```
+Note: The same shall also apply to `redeem()` that's governed by `_checkAndUpdateInstantRedemptionLimit()`.
+
 ## [L-03] Oracle reliability that is optimistically Chainlink dependent
 `getOUSGPrice()` with `price` fed by [Chainlink](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/rwaOracles/RWAOracleExternalComparisonCheck.sol#L25-L32) is frequently called in ousgInstantManager.sol and rOUSG.sol. The system would be crippled if Chainlink failed to feed correct prices due to uncontrolled situations e.g. staleness, outside min/max answers, new integrations needed to accommodate decimals changes initiated by Chainlink etc.    
 
 To mitigate the risks associated with relying on a single oracle, such as Chainlink, for price feeds in smart contracts, several strategies can be employed. These include multi-oracle aggregation, which leverages data from multiple sources to derive a more reliable price point; fallback oracles such as Uniswap TWAP, which serve as backups in case the primary oracle fails; oracle heartbeat checks to ensure regular data updates; circuit breakers to halt operations under abnormal data conditions; governance intervention for manual fixes; decentralized oracle networks for broader data aggregation; and cross-referencing with on-chain data for additional validation. Implementing a combination of these methods can significantly enhance the robustness and security of smart contracts, especially in decentralized finance (DeFi) applications, by reducing the dependency on a single data source and mitigating the risks of data manipulation or failure.
 
+## [L-04] Helper view functions for current rate limit quota
+Consider introducing view functions in ousgInstantManager.sol on remaining rate limits where possible so that investors may check whether or not their [mints](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L290)/[redeems](https://github.com/code-423n4/2024-03-ondo-finance/blob/main/contracts/ousg/ousgInstantManager.sol#L406) are going to be permissible.
+
+Here're the suggested functions:
+
+```solidity
+function checkInstantMintLimit(uint256 amount) public view returns (bool permissible) {
+    permissible = (amount <= instantMintLimit - currentInstantMintAmount);
+``` 
+```solidity
+function checkInstantRedemptionLimit(uint256 amount) public view returns (bool permissible) {
+    permissible = (amount <= instantRedemptionLimit - currentInstantRedemptionAmount);
+``` 
 ## [NC-01] Erroneous require message
 Consider having the following code line refactored to accurately portray the supposed message:   
 
