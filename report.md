@@ -106,8 +106,6 @@ Additionally, C4 analysis included 64 reports detailing issues with a risk ratin
 
 All of the issues presented here are linked back to their original finding.
 
-*Note: At sponsor request, the findings repo has not yet been made public. Once approval is received from the sponsor team, links to the original findings will be functional.* 
-
 # Scope
 
 The code under review can be found within the [C4 Ondo Finance repository](https://github.com/code-423n4/2024-03-ondo-finance), and is composed of 3 smart contracts written in the Solidity programming language and includes 851 lines of Solidity code.
